@@ -16,7 +16,9 @@ from pathlib import Path
 # --- Repo root (always derived from this file's location) ---
 # config.py lives at <repo_root>/code/py/config.py → parents[2] is repo root
 REPO_ROOT    = Path(__file__).resolve().parents[2]
-FIGURES      = REPO_ROOT / "Figures"
+OUTPUT       = REPO_ROOT / "output"
+FIGURES      = OUTPUT / "figures"
+TABLES       = OUTPUT / "tables"
 CODE         = REPO_ROOT / "code"
 CODE_PY      = REPO_ROOT / "code" / "py"
 CODE_STATA   = REPO_ROOT / "code" / "stata"
@@ -39,18 +41,3 @@ DATA_RAW       = DATA_ROOT / "rawdata"
 DATA_PROCESSED = DATA_ROOT / "processed"
 
 
-def change_paths() -> dict:
-    """Legacy helper — prefer direct attribute access (cfg.FIGURES, cfg.DATA_RAW).
-    Kept for backward compatibility with 01_data_prep.py."""
-    return {
-        "root":      REPO_ROOT,
-        "code":      CODE,
-        "python":    CODE_PY,
-        "stata":     CODE_STATA,
-        "data":      DATA_ROOT,
-        "rawdata":   DATA_RAW,
-        "processed": DATA_PROCESSED,
-        "output":    FIGURES,   # legacy key — points to Figures/
-        "tables":    FIGURES,   # legacy key — points to Figures/
-        "figures":   FIGURES,
-    }
