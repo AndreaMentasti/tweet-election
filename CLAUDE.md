@@ -29,7 +29,9 @@
 ├── CLAUDE.md
 ├── .claude/                     # Rules, skills, agents, hooks
 ├── Bibliography_base.bib
-├── Figures/                     # Output figures (PNG, 300 DPI)
+├── output/
+│   ├── figures/                 # Output figures (PNG, 300 DPI)
+│   └── tables/                  # Output LaTeX tables
 ├── code/
 │   ├── py/
 │   │   ├── config.py            # Path config (import as cfg)
@@ -118,8 +120,8 @@ python scripts/quality_score.py <file>
 | Pattern | Idiom | Notes |
 |---------|-------|-------|
 | Paths | `import config as cfg` then `cfg.DATA_PROCESSED` | Never hardcode paths |
-| Save figure | `fig.savefig(path, dpi=300, bbox_inches='tight')` | Always 300 DPI |
-| Save table | `df.style.to_latex(...)` or pandas `to_latex()` | Output to `Figures/` |
+| Save figure | `fig.savefig(cfg.FIGURES / "name.png", dpi=300, bbox_inches='tight')` | Always 300 DPI |
+| Save table | `df.to_latex(cfg.TABLES / "name.tex")` | Output to `output/tables/` |
 | Seed | `random.seed(42)` at top of script | Only if stochastic |
 
 ## Stata Patterns
@@ -127,8 +129,8 @@ python scripts/quality_score.py <file>
 | Pattern | Idiom | Notes |
 |---------|-------|-------|
 | Root path | `global root "path/to/project"` at top | All paths via `$root` |
-| LaTeX table | `esttab ... using "$root/Figures/table.tex", booktabs label replace` | |
-| PNG figure | `graph export "$root/Figures/fig.png", replace width(2400)` | ≈ 300 DPI @ 8in |
+| LaTeX table | `esttab ... using "$root/output/tables/table.tex", booktabs label replace` | |
+| PNG figure | `graph export "$root/output/figures/fig.png", replace width(2400)` | ≈ 300 DPI @ 8in |
 | Seed | `set seed 42` | Before any random draws |
 
 ---
@@ -138,4 +140,4 @@ python scripts/quality_score.py <file>
 | Stage | Script | Output | Status |
 |-------|--------|--------|--------|
 | 1: Data prep | `code/py/01_data_prep.py` | `data/processed/*.dta` | ✅ Done |
-| 2: Analysis | `code/stata/0-data_prep.do` | `Figures/`, LaTeX tables | 🔲 In progress |
+| 2: Analysis | `code/stata/0-data_prep.do` | `output/figures/`, `output/tables/` | 🔲 In progress |
