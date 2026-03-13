@@ -20,13 +20,25 @@ Help user understand the project folder structure, verify the setup works, and d
 **Data finding:** No merge key between tweets (anonymous users) and election data (candidates). Noted in script TODO.
 **Demo:** Wrote and ran `02_scatter_engagement.py` -- clean exit, figure saved at 300 DPI.
 
+**Stata found:** `C:\Program Files\StataNow19\StataSE-64.exe` — runs via `-b do` for batch mode.
+**Code review:** Ran full Python (28 issues) and Stata (13 issues) review, fixed all.
+**Output restructure:** Created `output/figures/` and `output/tables/` folders, moved all outputs.
+**New scripts:** `03_vote_share_barplot.py` (grouped bar chart), `02_scatter_engagement.py` (scatter).
+**Git workflow:** Created branch `feature/code-review-cleanup`, committed, pushed, PR #1 merged to main.
+**Translate-code skill:** Built `/translate-code` skill in `.claude/skills/translate-code/SKILL.md`.
+  - First version too verbose (415 lines, 7 steps) — translations slow and over-engineered.
+  - Rewrote to lean version (75 lines, 3 steps): read → translate → run.
+  - Key lesson: Stata `graph bar` can't do grouped bars with color legend; must use `twoway bar` with manual x-positions after `reshape wide`.
+  - Key lesson: `reshape wide` fails if extra variables (candidate, votes) aren't dropped first — need `keep` before reshape.
+**Translation test:** `03_vote_share_barplot.py → stata` ran clean with lean skill. Output at `output/figures/vote_share_by_state_stata.png`.
+
 ## Open Questions / Blockers
 
-- [ ] Stata 19 location unknown -- need to find it to run .do files
 - [ ] Tweet data lacks candidate/party link -- needed for real engagement analysis
+- [x] Stata 19 location found
+- [ ] OneDrive locks `.git/` files — recommend moving repo outside OneDrive
 
 ## Next Steps
 
-- [ ] Demo /review-stata on the do file
-- [ ] Demo /research-ideation
-- [ ] Find Stata 19 installation path
+- [ ] Push translate-code skill and updated Stata files via new branch + PR
+- [ ] Test translation in other directions (Stata → Python, Python → R)
