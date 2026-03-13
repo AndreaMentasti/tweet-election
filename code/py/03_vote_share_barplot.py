@@ -36,8 +36,8 @@ width = 0.35
 fig, ax = plt.subplots(figsize=(10, 6))
 fig.patch.set_facecolor("white")
 
-bars_dem = ax.bar(x - width / 2, pivot["Democrat"], width, label="Democrat", color="blue", alpha=0.8)
-bars_rep = ax.bar(x + width / 2, pivot["Republican"], width, label="Republican", color="red", alpha=0.8)
+bars_dem = ax.bar(x - width / 2, pivot["Democrat"], width, label="Democrat User", color="blue", alpha=0.8)
+bars_rep = ax.bar(x + width / 2, pivot["Republican"], width, label="Republican User", color="red", alpha=0.8)
 
 ax.set_ylabel("Vote Share in Percentage")
 ax.set_title("Vote Share by State and Party (2020/2025 Elections)")
