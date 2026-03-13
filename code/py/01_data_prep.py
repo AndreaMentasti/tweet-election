@@ -55,3 +55,6 @@ df_us.to_stata(cfg.DATA_PROCESSED / "tweets_processed.dta", write_index=False)
 df_elec.to_stata(cfg.DATA_PROCESSED / "election_data_processed.dta", write_index=False)
 
 logging.info("Data preparation complete.")
+
+# AGGIUNTA DI UNA FRASE
+# MI PIACE DEPLOYARE E FARE MERGE SU GITHUB, MI FA SENTIRE UN VERO DATA SCIENTIST!

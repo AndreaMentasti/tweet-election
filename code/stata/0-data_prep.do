@@ -112,9 +112,18 @@ graph bar vote_share, over(party) over(state) ///
     graphregion(color(white)) bgcolor(white)
 graph export "$root/output/figures/vote_share_by_state.png", replace width(2400)
 
+* ECCOMI, SONO IO!
+
 *------------------------------------------------------------------------------*
 * Cleanup
 *------------------------------------------------------------------------------*
 graph drop _all
 log close
 *------------------------------------------------------------------------------*
+
+
+
+
+
+
+
