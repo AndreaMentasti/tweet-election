@@ -36,15 +36,15 @@ width = 0.35
 fig, ax = plt.subplots(figsize=(10, 6))
 fig.patch.set_facecolor("white")
 
-bars_dem = ax.bar(x - width / 2, pivot["Democrat"], width, label="Democrat", color="blue", alpha=0.8)
-bars_rep = ax.bar(x + width / 2, pivot["Republican"], width, label="Republican", color="red", alpha=0.8)
+bars_dem = ax.bar(x - width / 2, pivot["Democrat"], width, label="Democrat User", color="blue", alpha=0.8)
+bars_rep = ax.bar(x + width / 2, pivot["Republican"], width, label="Republican User", color="red", alpha=0.8)
 
-ax.set_ylabel("Vote Share")
+ax.set_ylabel("Vote Share (%)")
 ax.set_title("Vote Share by State and Party (2020)")
 ax.set_xticks(x)
 ax.set_xticklabels(states)
 ax.legend()
-ax.set_ylim(0, 0.75)
+ax.set_ylim(0, 0.68)
 ax.grid(axis="y", alpha=0.3)
 
 fig.savefig(cfg.FIGURES / "vote_share_by_state.png", dpi=300, bbox_inches="tight")
