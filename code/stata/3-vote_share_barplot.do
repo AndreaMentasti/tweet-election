@@ -1,81 +1,103 @@
-/*
+/*******************************************************************************
  * 3-vote_share_barplot.do — Bar chart of vote share by state and party.
- * Translated from: code/py/03_vote_share_barplot.py
  *
- * Inputs:  data/processed/election_data_processed.dta
- * Outputs: output/figures/vote_share_by_state_stata.png
- * Last updated: 2026-03-13
- */
+ * Translated line-by-line from code/py/03_vote_share_barplot.py
+ * using script-translator skill.
+ *
+ * Inputs:  $data_root/processed/election_data_processed.dta
+ * Outputs: $root/output/figures/vote_share_by_state.png
+ * Last updated: 2026-03-16
+ *******************************************************************************/
 
+*------------------------------------------------------------------------------*
+* Program Setup
+*------------------------------------------------------------------------------*
 version 17
 clear all
 set more off
+macro drop _all
+capture log close
 
+*------------------------------------------------------------------------------*
+* Directories
+*------------------------------------------------------------------------------*
 global root "C:/Users/RaffaellaIntinghero/OneDrive - Wyss Academy for Nature/tweet-election"
-log using "$root/quality_reports/3-vote_share_barplot.log", replace
+log using "$root/quality_reports/stata_logs/3-vote_share_barplot.log", replace
 
+* Load machine-specific Dropbox data path
 capture noisily do "$root/code/stata/config_local.do"
 if _rc != 0 {
-    di as error "ERROR: config_local.do not found. See CLAUDE.md Machine Setup."
+    di as error "ERROR: config_local.do not found or contains errors."
+    di as error "Copy config_local.do.template to config_local.do and set data_root."
     exit 1
 }
 if `"$data_root"' == "" {
     di as error "ERROR: data_root not defined. Check config_local.do."
     exit 1
 }
+*------------------------------------------------------------------------------*
 
-*--- 1. Load election data ---*
+*------------------------------------------------------------------------------*
+* 1. Load election data
+*------------------------------------------------------------------------------*
+* election = pd.read_csv(cfg.DATA_PROCESSED / "election_data_processed.csv")
 use "$data_root/processed/election_data_processed.dta", clear
-assert _N > 0
-di "Election data: `=_N' rows"
 
-*--- 2. Validate parties ---*
+* logging.info(f"Election data: {len(election)} rows")
+count
+di "Election data: `r(N)' rows"
+
+*------------------------------------------------------------------------------*
+* 2. Validate parties
+*------------------------------------------------------------------------------*
+* assert expected_parties == actual_parties
+* Verify only Democrat and Republican exist
 tab party
-assert r(r) == 2
+assert r(r) == 2    // exactly 2 categories
 
-*--- 3. Pivot: reshape wide so each state has Democrat & Republican columns ---*
-encode state, gen(state_num)
-gen x_pos = state_num - 1
+*------------------------------------------------------------------------------*
+* 3. Pivot for grouped bar chart
+*------------------------------------------------------------------------------*
+* Python: pivot = election.pivot(index="state", columns="party", values="vote_share")
+* Stata: reshape wide so each party becomes a separate variable → allows bar(1)/bar(2) coloring
 
-keep state party vote_share state_num x_pos
+* Keep only what we need for the pivot
+keep state party vote_share
 
-rename vote_share vs
-reshape wide vs, i(state state_num x_pos) j(party) string
-rename vsDemocrat vs_dem
-rename vsRepublican vs_rep
+* Encode party for reshape
+encode party, gen(party_num)
+drop party
 
-*--- 4. Create offset x-positions (width=0.35, offset=0.175) ---*
-gen x_dem = x_pos - 0.175
-gen x_rep = x_pos + 0.175
+* Reshape wide: vote_share → vote_share1 (Democrat) vote_share2 (Republican)
+reshape wide vote_share, i(state) j(party_num)
 
-*--- 5. Build x-axis labels from encoded state names ---*
-qui sum state_num
-local n_states = r(max)
-local xlabels ""
-forvalues i = 1/`n_states' {
-    local sname : label (state_num) `i'
-    local xval = `i' - 1
-    local xlabels `"`xlabels' `xval' "`sname'""'
-}
+* Rename for clarity — party_num 1=Democrat, 2=Republican (alphabetical encode)
+rename vote_share1 dem_share
+rename vote_share2 rep_share
+label var dem_share "Democrat User"
+label var rep_share "Republican User"
 
-*--- 6. Draw grouped bar chart ---*
-twoway ///
-    (bar vs_dem x_dem, barwidth(0.35) color(blue%80)) ///
-    (bar vs_rep x_rep, barwidth(0.35) color(red%80)) ///
-    , ///
-    title("Vote Share by State and Party (2020)") ///
-    ytitle("Vote Share") ///
-    xtitle("") ///
-    xlabel(`xlabels', labsize(medium)) ///
-    ylabel(0(0.1)0.7, grid glcolor(gs14)) ///
-    yscale(range(0 0.75)) ///
-    legend(order(1 "Democrat" 2 "Republican") position(1) ring(0) ///
-        region(lstyle(solid) lcolor(gs12) fcolor(white))) ///
-    graphregion(color(white)) bgcolor(white) ///
-    plotregion(margin(b=0))
+*------------------------------------------------------------------------------*
+* 4. Create grouped bar chart
+*------------------------------------------------------------------------------*
+* Python: ax.bar(x - width/2, pivot["Democrat"], ..., color="blue", alpha=0.8)
+*         ax.bar(x + width/2, pivot["Republican"], ..., color="red", alpha=0.8)
+* Stata: graph bar with two variables → bar(1) and bar(2) control colors
 
-graph export "$root/output/figures/vote_share_by_state_stata.png", replace width(2400)
-di "Figure saved to $root/output/figures/vote_share_by_state_stata.png"
+graph bar dem_share rep_share, over(state) ///
+    title("Vote Share by State and Party (2020/2025 Elections)") ///
+    ytitle("Vote Share in Percentage") ///
+    bar(1, color(blue%80)) bar(2, color(red%80)) ///
+    legend(order(1 "Democrat User" 2 "Republican User") position(1) ring(0)) ///
+    yscale(range(0 0.78)) ylabel(0(0.1)0.7, grid glcolor(gs14)) ///
+    xsize(10) ysize(6) ///
+    graphregion(color(white)) bgcolor(white)
 
+graph export "$root/output/figures/vote_share_by_state.png", replace width(2400)
+
+*------------------------------------------------------------------------------*
+* Cleanup
+*------------------------------------------------------------------------------*
 graph drop _all
 log close
+*------------------------------------------------------------------------------*

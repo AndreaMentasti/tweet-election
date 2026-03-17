@@ -59,12 +59,8 @@
 
 ## Machine Setup (One-Time per Collaborator)
 
-1. **Python:** `cp code/py/config_local.py.template code/py/config_local.py`
-   Edit `config_local.py` → set `DATA_ROOT` to your Dropbox `data/` path.
-2. **Stata:** Edit `global root` in `0-data_prep.do` → your local repo path.
-   `cp code/stata/config_local.do.template code/stata/config_local.do`
-   Edit `config_local.do` → set `global data_root` to your Dropbox `data/` path.
-3. **Verify:** `python code/py/01_data_prep.py` should complete without errors.
+See **[SETUP.md](SETUP.md)** for full instructions (Python config, Stata config,
+Stata on PATH, pipeline verification).
 
 Neither `config_local.py` nor `config_local.do` should ever appear in `git status`.
 
