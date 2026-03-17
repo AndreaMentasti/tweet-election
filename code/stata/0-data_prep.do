@@ -30,7 +30,7 @@ set scheme s2color
 global root "C:/Users/RaffaellaIntinghero/OneDrive - Wyss Academy for Nature/tweet-election"
 
 * Open log early so config errors are captured
-log using "$root/quality_reports/0-data_prep.log", replace
+log using "$root/quality_reports/stata_logs/0-data_prep.log", replace
 
 * Load machine-specific Dropbox data path from config_local.do (gitignored).
 * To set up: copy config_local.do.template → config_local.do, fill in data_root.

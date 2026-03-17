@@ -38,7 +38,29 @@ Help user understand the project folder structure, verify the setup works, and d
 - [x] Stata 19 location found
 - [ ] OneDrive locks `.git/` files — recommend moving repo outside OneDrive
 
+### 2026-03-16: Environment Setup & Stata Skill
+
+**Stata on PATH:** Configured `stata` alias in both `.bashrc` (Claude Code terminal) and PowerShell profile. PowerShell profile location was tricky — Documents folder lives under OneDrive path.
+**Pandoc 3.9:** Installed via zip to `C:\Users\RaffaellaIntinghero\tools\pandoc-3.9\`, added to PATH in both shells.
+**pdfplumber 0.11.9:** Already installed via pip.
+**pdfgrep:** Skipped — Linux/macOS only. `pdftotext` (already available via mingw64) covers the same need.
+**SETUP.md:** Created collaborator setup guide. CLAUDE.md slimmed down to just link to it.
+**Compound Engineering plugin:** User installed `EveryInc/compound-engineering-plugin` globally.
+**Stata skill (user-level):** Created `~/.claude/skills/stata/SKILL.md` with:
+  - Stata concepts, running .do files, writing patterns
+  - Full index of 37 PDF manuals (17K pages) at `C:\Program Files\StataNow19\docs\`
+  - Token-efficient PDF reading strategies: `pdftotext` for prose, `pdfplumber` for tables
+  - Recommended workflow: stoc.pdf → manual TOC → targeted 10-20 page extraction
+  - Key finding: pandoc cannot read PDFs, only write them
+
+**Stata skill (project-level):** Copied to `.claude/skills/stata/SKILL.md` so Andrea gets it automatically.
+**Stata wrapper fix:** `stata` alias didn't work in non-interactive bash. Created `~/bin/stata` wrapper script instead — reliable in all shells.
+**End-to-end Stata test:** Wrote and ran `1-test_analysis.do` — produced table, scatter plot, correlation (r=0.9986). All outputs verified, log clean.
+**Log organization:** Created `quality_reports/stata_logs/` for all Stata logs. Updated wrapper to auto-move batch logs there. Updated all do-files (`0-data_prep.do`, `1-test_analysis.do`, `3-vote_share_barplot.do`) to log to `stata_logs/`. Moved 6 stray logs.
+**Removed old translate-code skill:** Will be replaced by new `script-translator` skill with bodies/ subdirectory for language-pair-specific mapping tables.
+
 ## Next Steps
 
-- [ ] Push translate-code skill and updated Stata files via new branch + PR
-- [ ] Test translation in other directions (Stata → Python, Python → R)
+- [ ] Create `script-translator` skill (SKILL.md + 6 bodies/*.md files)
+- [ ] Push all changes via branch + PR
+- [ ] Test translation with new skill in all directions
